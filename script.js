@@ -81,7 +81,7 @@ const game = (function() {
     const placeMark = (mark, row, col, event) => {
         console.log(turnsPlayed);
         if (gameBoard.score[row][col] === null) {
-
+            turnsPlayed++;
             gameBoard.updateScore(mark, row, col);
             console.log(gameBoard.score);
 
@@ -105,9 +105,11 @@ const game = (function() {
                         grid.removeEventListener('click', getGridLocation);
                     });
                     if (turnsPlayed === 9) {
+                        gameStatusDisplay.style.color = 'lightsalmon';
                         gameStatusDisplay.innerText = `It's a draw!`;
                     } else {
-                        gameStatusDisplay.innerText = `${currentPlayer.getName()} is the winner!`
+                        gameStatusDisplay.style.color = 'limegreen';
+                        gameStatusDisplay.innerText = `${currentPlayer.getName()} is the winner!`;
                     }
                 })();
             }
@@ -118,8 +120,6 @@ const game = (function() {
         if (turnsPlayed === 9) {
             return true;
         }
-
-        turnsPlayed++;
         const score = gameBoard.score;
         //hardcoded
         switch (true) {
