@@ -9,9 +9,7 @@ const Player = (name, mark) => {
 
 //game object (to control flow of game)
 const game = (function() {
-
     const gameBoard = (function() { 
-
         const score = (function initializeScoreBoard() {
             const scoreArray = [];
             for (let r = 0; r < 3; r++) {
@@ -22,6 +20,7 @@ const game = (function() {
             }
             return scoreArray;
         })();
+
         const setUpGameBoard = () => { 
             const gridBoard = document.querySelector('.grid-board');
             for (let r = 0; r < 3; r++) {
@@ -30,28 +29,32 @@ const game = (function() {
 
                     grid.setAttribute('data-row', r);
                     grid.setAttribute('data-col', c);
-                    grid.classList.toggle('grid-spot');
+                    grid.classList.toggle('grid-cell');
 
                     gridBoard.appendChild(grid);                
                 }
             }
         };
-        const updateBoard = (mark, row, col) => {
+
+        const updateScore = (mark, row, col) => {
             score[row][col] = mark;
         }
-        return { score, setUpGameBoard, updateBoard };    
+        
+        return { score, setUpGameBoard, updateScore };    
     })();
 
     let player1;
     let player2;
     let currentPlayer;
+    let turnsPlayed = 0;
     const gridBoard = document.querySelector('.grid-board');
+    const gameStatusDisplay = gridBoard.nextElementSibling;
 
-    const startGame = () => {
+    const playGame = () => {
         gameBoard.setUpGameBoard();
         getPlayerData();
         currentPlayer = player1;
-        playRound();
+        startGame();
     };
 
     const getPlayerData = () => {
@@ -59,7 +62,7 @@ const game = (function() {
         player2 = Player(/* prompt(`What is Player Two's name?`) ||  */ 'Player Two', 'o'); 
     }
 
-    const playRound = () => {
+    const startGame = () => {
         Array.from(gridBoard.children).forEach(grid => {
             grid.addEventListener('click', getGridLocation);
         });
@@ -76,17 +79,22 @@ const game = (function() {
 
     //update score and display
     const placeMark = (mark, row, col, event) => {
+        console.log(turnsPlayed);
         if (gameBoard.score[row][col] === null) {
 
-            gameBoard.updateBoard(mark, row, col);
+            gameBoard.updateScore(mark, row, col);
             console.log(gameBoard.score);
 
-            (function updateDisplay() {
+            (function updateBoardDisplay() {
                 if (mark === 'x') {
-                    event.target.style.backgroundColor = 'blue';
+                    event.target.style.color = 'rgb(247, 116, 49)';
+                    event.target.innerText = mark;
                 } else if (mark === 'o') {
-                    event.target.style.backgroundColor = 'yellow';
+                    event.target.style.color = 'rgb(190, 215, 83)';
+                    event.target.innerText = mark;
                 } 
+                const nextPlayer = currentPlayer === player1 ? player2 : player1;
+                gameStatusDisplay.innerText = `${nextPlayer.getName()}'s turn!`
             })();
 
             if (!checkWinnerFound()) {
@@ -96,13 +104,22 @@ const game = (function() {
                     Array.from(gridBoard.children).forEach(grid => {
                         grid.removeEventListener('click', getGridLocation);
                     });
-                    alert(`The winner is ${currentPlayer.getName()}`);
+                    if (turnsPlayed === 9) {
+                        gameStatusDisplay.innerText = `It's a draw!`;
+                    } else {
+                        gameStatusDisplay.innerText = `${currentPlayer.getName()} is the winner!`
+                    }
                 })();
             }
         }
     };
 
     const checkWinnerFound = () => {
+        if (turnsPlayed === 9) {
+            return true;
+        }
+
+        turnsPlayed++;
         const score = gameBoard.score;
         //hardcoded
         switch (true) {
@@ -127,8 +144,10 @@ const game = (function() {
         }
     };
 
-    return { startGame };
+    return { playGame };
 })();
 
-game.startGame();
+game.playGame();
 
+//Add logic for tie
+//Add reset button

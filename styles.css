@@ -1,5 +1,53 @@
-.grid-spot {
-    height: 100px;
-    width: 100px;
-    background-color: red;
+html {
+    height: 100%;
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+h1 {
+    font-size: 5rem;
+    margin-bottom: 20px;
+}
+
+body {
+    font-size: 1.2rem;
+    background-color: gray;
+    padding: 0;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+main {
+    text-align: center;
+}
+
+.grid-cell {
+    font-size: 10rem;
+    padding-bottom: 1.5rem;
+    border: 3px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.grid-board {
+    border: 2px solid black;
+    height: 40vw;
+    width: 40vw;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+}
+
+footer {
+    padding-right: 15px;
+    padding-bottom: 5px;
+    align-self: flex-end
 }
